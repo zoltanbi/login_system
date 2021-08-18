@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import {View} from 'react-native';
 
 //icons
-import {Octicons, Ionicons} from '@expo/vector-icons';
+import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
 
 //formik
 import {Formik} from 'formik';
@@ -22,10 +22,12 @@ import {
     StyledButton,
     ButtonText,
     Colors,
+    MsgBox,
+    Line
 } from '../components/styles'
 
 // Colors
-const { brand, darkLight } = Colors;
+const { brand, darkLight, primary } = Colors;
 
 const Login = () => {
 
@@ -69,10 +71,14 @@ const Login = () => {
                             hidePassword={hidePassword}
                             setHidePassword={setHidePassword}
                         />
+                        <MsgBox>...</MsgBox>
                         <StyledButton onPress={handleSubmit}>
-                            <ButtonText>
-                                Login
-                            </ButtonText>
+                            <ButtonText>Login</ButtonText>
+                        </StyledButton>
+                        <Line/>
+                        <StyledButton google={true} onPress={handleSubmit}>
+                            <Fontisto name="google" color={primary} size={25}/>
+                            <ButtonText google={true}>Sign in with Google</ButtonText>
                         </StyledButton>
                 </StyledFormArea>)}
 
