@@ -1,5 +1,6 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
+import {View} from 'react-native';
 
 //formik
 import {Formik} from 'formik';
@@ -12,6 +13,7 @@ import {
     SubTitle,
     StyledFormArea
 } from '../components/styles'
+
 
 const Login = () => {
     return (
@@ -35,6 +37,12 @@ const Login = () => {
     );
 }
 
+const MyTextInput = ({label, icon, ...props}) => {
+    return (
+        <View>
 
+        </View>
+    )
+}
 
 export default Login;

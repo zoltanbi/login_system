@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, TextInput} from 'react-native';
 import Constants from 'expo-constants';
 
 const StatusBarHeight = Constants.statusBarHeight;
@@ -53,4 +53,23 @@ export const SubTitle = styled.Text`
 
 export const StyledFormArea = styled.View`
   width: 90%;
+`
+
+export const StyledTextInput = styled.TextInput`
+  background-color: ${secondary};
+  padding: 15px;
+  padding-left: 55px;
+  padding-right: 55px;
+  border-radius: 5px;
+  font-size: 16px;
+  height: 60px;
+  margin-vertical: 3px;
+  margin-bottom: 10px;
+  color: ${tertiary};
+`
+
+export const StyledInputLabel = styled.Text`
+  color: ${tertiary};
+  font-size: 13px;
+  text-align: left;
 `
