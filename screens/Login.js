@@ -2,6 +2,9 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {View} from 'react-native';
 
+//icons
+import {Octicons} from '@expo/vector-icons';
+
 //formik
 import {Formik} from 'formik';
 
@@ -11,9 +14,18 @@ import {
     PageLogo,
     PageTitle,
     SubTitle,
-    StyledFormArea
+    StyledFormArea,
+    StyledTextInput,
+    StyledInputLabel,
+    LeftIcon,
+    RightIcon,
+    StyledButton,
+    ButtonText,
+    Colors,
 } from '../components/styles'
 
+// Colors
+const { brand, darkLight } = Colors;
 
 const Login = () => {
     return (
@@ -29,7 +41,19 @@ const Login = () => {
                     onSubmit={(values) => {
                         console.log(values)
                     }}
-                >{({handleChange, handleBlur, handleSubmit, values}) => (<StyledFormArea></StyledFormArea>)}
+                >{({handleChange, handleBlur, handleSubmit, values}) => (
+                    <StyledFormArea>
+                        <MyTextInput
+                            label="Email Address"
+                            icon="mail"
+                            placeholder="name@email.com"
+                            placeholderTextColor={darkLight}
+                            onChangeText={handleChange('email')}
+                            onBlur={handleChange('email')}
+                            value={values.email}
+                            keyboardType="email-address"
+                        />
+                </StyledFormArea>)}
 
                 </Formik>
             </InnerContainer>
@@ -40,7 +64,11 @@ const Login = () => {
 const MyTextInput = ({label, icon, ...props}) => {
     return (
         <View>
-
+            <LeftIcon>
+                <Octicons name={icon} size={30} color={brand} />
+            </LeftIcon>
+            <StyledInputLabel>{label}</StyledInputLabel>
+            <StyledTextInput {...props}/>
         </View>
     )
 }
