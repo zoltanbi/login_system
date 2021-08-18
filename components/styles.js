@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {View, Text, Image, TextInput} from 'react-native';
+import {View, Text, Image, TextInput, TouchableOpacity} from 'react-native';
 import Constants from 'expo-constants';
 
 const StatusBarHeight = Constants.statusBarHeight;
@@ -72,4 +72,18 @@ export const StyledInputLabel = styled.Text`
   color: ${tertiary};
   font-size: 13px;
   text-align: left;
+`
+
+export const LeftIcon = styled.View`
+  left: 15px;
+  top: 38px;
+  position: absolute;
+  z-index: 1;
+`
+
+export const RightIcon = styled.TouchableOpacity`
+  left: 15px;
+  top: 38px;
+  position: absolute;
+  z-index: 1;
 `
