@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 import {
@@ -16,8 +16,6 @@ import {
 
 
 const Welcome = () => {
-
-    const [hidePassword, setHidePassword] = useState(true)
 
     return (
         <>
