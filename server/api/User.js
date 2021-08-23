@@ -110,7 +110,7 @@ router.post('/signin', (req, res) => {
     } else {
         // Check if user exists
         User.find({email}).then(data => {
-            if (data) {
+            if (data.length) {
                 // User exists
 
                 const hashedPassword = data[0].password;
@@ -143,7 +143,7 @@ router.post('/signin', (req, res) => {
         }).catch(err => {
             res.json({
                 status: "FAILED",
-                message: "AN error occurred while checking for existing user"
+                message: "An error occurred while checking for existing user"
             })
         })
     }
