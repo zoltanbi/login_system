@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import {View, ScrollView} from 'react-native';
+import {View, ActivityIndicator} from 'react-native';
 
 //icons
 import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
@@ -45,7 +45,8 @@ const Login = ({navigation}) => {
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
 
-    const handleLogin = (credentials) => {
+    const handleLogin = (credentials, setSubmitting) => {
+        handleMessage(null);
         const url = 'https://sleepy-lake-94908.herokuapp.com/user/signin';
 
         axios.post(url, credentials)
@@ -58,9 +59,11 @@ const Login = ({navigation}) => {
                 } else {
                     navigation.navigate('Welcome', {...data[0]})
                 }
+                setSubmitting(false);
             })
             .catch(error => {
                 console.log(error.JSON());
+                setSubmitting(false);
                 handleMessage("An error occurred. Check your network and try again");
             })
     }
@@ -81,11 +84,15 @@ const Login = ({navigation}) => {
 
                     <Formik
                         initialValues={{email: '', password: ''}}
-                        onSubmit={(values) => {
-                            console.log(values);
-                            navigation.navigate("Welcome");
+                        onSubmit={(values, {setSubmitting}) => {
+                            if (values.email == '' || values.password == '') {
+                                handleMessage('Please fill all the fields');
+                                setSubmitting(false);
+                            } else {
+                                handleLogin(values, setSubmitting)
+                            }
                         }}
-                    >{({handleChange, handleBlur, handleSubmit, values}) => (
+                    >{({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
                         <StyledFormArea>
                             <MyTextInput
                                 label="Email Address"
@@ -109,9 +116,15 @@ const Login = ({navigation}) => {
                                 setHidePassword={setHidePassword}
                             />
                             <MsgBox type={messageType}>{message}</MsgBox>
-                            <StyledButton onPress={handleSubmit}>
+
+                            {!isSubmitting && <StyledButton onPress={handleSubmit}>
                                 <ButtonText>Login</ButtonText>
-                            </StyledButton>
+                            </StyledButton>}
+
+                            {isSubmitting && <StyledButton disabled={true}>
+                                <ActivityIndicator size="large" color={primary}/>
+                            </StyledButton>}
+
                             <Line/>
                             <StyledButton google={true} onPress={handleSubmit}>
                                 <Fontisto name="google" color={primary} size={25}/>
