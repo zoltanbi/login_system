@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import {View, TouchableOpacity, ScrollView} from 'react-native';
+import {View, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
 
 //icons
 import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
@@ -39,11 +39,16 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 // keyboard avoiding view
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 
+// Api client
+import axios from "axios";
+
 const Signup = ({navigation}) => {
 
     const [hidePassword, setHidePassword] = useState(true)
     const [show, setShow] = useState(false);
     const [date, setDate] = useState(new Date(2000,0,1));
+    const [message, setMessage] = useState();
+    const [messageType, setMessageType] = useState();
 
     //Actual date of birth to be sent
     const [dob, setDob] = useState();
@@ -57,6 +62,35 @@ const Signup = ({navigation}) => {
 
     const showDatePicker = () => {
         setShow(true);
+    }
+
+    // form handling
+    const handleSignup = (credentials, setSubmitting) => {
+        handleMessage(null);
+        const url = 'https://sleepy-lake-94908.herokuapp.com/user/signup';
+
+        axios.post(url, credentials)
+            .then((response) => {
+                const result = response.data;
+                const {message, status, data} = result;
+
+                if (status !== 'SUCCESS') {
+                    handleMessage(message, status);
+                } else {
+                    navigation.navigate('Welcome', {...data})
+                }
+                setSubmitting(false);
+            })
+            .catch(error => {
+                console.log(error.JSON());
+                setSubmitting(false);
+                handleMessage("An error occurred. Check your network and try again");
+            })
+    }
+
+    const handleMessage = (message, type = 'FAILED') => {
+        setMessage(message);
+        setMessageType(type);
     }
 
     return (
@@ -79,23 +113,30 @@ const Signup = ({navigation}) => {
                     )}
 
                     <Formik
-                        initialValues={{fullName: '', email: '', dateOfBirth: '', password: '',
+                        initialValues={{name: '', email: '', dateOfBirth: '', password: '',
                             confirmPassword: ''}}
-                        onSubmit={(values) => {
-                            console.log(values);
-                            navigation.navigate("Welcome");
+                        onSubmit={(values, {setSubmitting}) => {
+                            values= {...values, dateOfBirth: dob}
+                            if (values.email == '' || values.password == '' || values.confirmPassword == '' ||
+                                values.name == '' || values.dateOfBirth == '' ) {
+                                handleMessage('Please fill all the fields');
+                                setSubmitting(false);
+                            } else if (values.password !== values.confirmPassword) {
+                                handleMessage('Passwords do not match');
+                                setSubmitting(false);
+                            } else {
+                                handleSignup(values, setSubmitting)
+                            }
                         }}
-                    >{({handleChange, handleBlur, handleSubmit, values}) => (
+                    >{({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
                         <StyledFormArea>
                             <MyTextInput
                                 label="Full Name"
                                 icon="person"
                                 placeholder="Edwardo McDingle"
                                 placeholderTextColor={darkLight}
-                                onChangeText={handleChange('fullName')}
-                                onBlur={handleChange('fullName')}
-                                value={values.email}
-                                keyboardType="email-address"
+                                onChangeText={handleChange('name')}
+                                value={values.name}
                             />
                             <MyTextInput
                                 label="Email Address"
@@ -103,7 +144,6 @@ const Signup = ({navigation}) => {
                                 placeholder="name@email.com"
                                 placeholderTextColor={darkLight}
                                 onChangeText={handleChange('email')}
-                                onBlur={handleChange('email')}
                                 value={values.email}
                                 keyboardType="email-address"
                             />
@@ -125,7 +165,6 @@ const Signup = ({navigation}) => {
                                 placeholder="* * * * * * * *"
                                 placeholderTextColor={darkLight}
                                 onChangeText={handleChange('password')}
-                                onBlur={handleChange('password')}
                                 value={values.password}
                                 secureTextEntry={hidePassword}
                                 isPassword={true}
@@ -138,17 +177,26 @@ const Signup = ({navigation}) => {
                                 placeholder="* * * * * * * *"
                                 placeholderTextColor={darkLight}
                                 onChangeText={handleChange('confirmPassword')}
-                                onBlur={handleChange('confirmPassword')}
-                                value={values.password}
+                                value={values.confirmPassword}
                                 secureTextEntry={hidePassword}
                                 isPassword={true}
                                 hidePassword={hidePassword}
                                 setHidePassword={setHidePassword}
                             />
-                            <MsgBox>...</MsgBox>
-                            <StyledButton onPress={handleSubmit}>
+                            <MsgBox type={messageType}>{message}</MsgBox>
+
+                            {!isSubmitting && (
+                                <StyledButton onPress={handleSubmit}>
                                 <ButtonText>Signup</ButtonText>
                             </StyledButton>
+                            )}
+
+                            {isSubmitting && (
+                                <StyledButton disabled={true}>
+                                <ActivityIndicator size="large" color={primary}/>
+                            </StyledButton>
+                            )}
+
                             <Line/>
                             <ExtraView>
                                 <ExtraText>Already have an account? </ExtraText>

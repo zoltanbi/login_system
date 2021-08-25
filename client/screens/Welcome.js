@@ -15,7 +15,9 @@ import {
 } from '../components/styles'
 
 
-const Welcome = ({navigation}) => {
+const Welcome = ({navigation, route}) => {
+
+    const {name, email} = route.params;
 
     return (
         <>
@@ -25,8 +27,8 @@ const Welcome = ({navigation}) => {
 
                 <WelcomeContainer>
                     <PageTitle welcome={true}>Welcome!</PageTitle>
-                    <SubTitle welcome={true}>Bobjoe Jeffryson</SubTitle>
-                    <SubTitle welcome={true}>joe.bob@email.com</SubTitle>
+                    <SubTitle welcome={true}>{name || 'Firstname Lastname'}</SubTitle>
+                    <SubTitle welcome={true}>{email || 'email@email.com'}</SubTitle>
                     <StyledFormArea>
                         <Avatar resizeMode="cover" source={require('../assets/img/img1.png')} />
                         <Line/>
